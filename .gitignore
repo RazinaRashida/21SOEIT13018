@@ -1,129 +1,44 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
+import os
+from pathlib import Path
+DIRECTORIES = {
+	"HTML": [".html5", ".html", ".htm", ".xhtml"],
+	"IMAGES": [".jpeg", ".jpg", ".tiff", ".gif", ".bmp", ".png", ".bpg", "svg",
+			".heif", ".psd"],
+	"VIDEOS": [".avi", ".flv", ".wmv", ".mov", ".mp4", ".webm", ".vob", ".mng",
+			".qt", ".mpg", ".mpeg", ".3gp"],
+	"DOCUMENTS": [".oxps", ".epub", ".pages", ".docx", ".doc", ".fdf", ".ods",
+				".odt", ".pwi", ".xsn", ".xps", ".dotx", ".docm", ".dox",
+				".rvg", ".rtf", ".rtfd", ".wpd", ".xls", ".xlsx", ".ppt",
+				".pptx"],
+	"ARCHIVES": [".a", ".ar", ".cpio", ".iso", ".tar", ".gz", ".rz", ".7z",
+				".dmg", ".rar", ".xar", ".zip"],
+	"AUDIO": [".aac", ".aa", ".aac", ".dvf", ".m4a", ".m4b", ".m4p", ".mp3",
+			".msv", "ogg", "oga", ".raw", ".vox", ".wav", ".wma"],
+	"TEXT": [".txt", ".in", ".out"],
+	"PDF": [".pdf"],
+	"PYTHON": [".py", ".ipynb"],
+	"XML": [".xml"],
+	"EXE": [".exe"],
+	"SHELL": [".sh"],
+	"C": [".c",".cpp"]
+}
+FILE_FORMATS = {file_format: directory
+				for directory, file_formats in DIRECTORIES.items()
+				for file_format in file_formats}
+def organize_junk():
+	for entry in os.scandir():
+		if entry.is_dir():
+			continue
+		file_path = Path(entry)
+		file_format = file_path.suffix.lower()
+		if file_format in FILE_FORMATS:
+			directory_path = Path(FILE_FORMATS[file_format])
+			directory_path.mkdir(exist_ok=True)
+			file_path.rename(directory_path.joinpath(file_path))
+		for dir in os.scandir():
+			try:
+				os.rmdir(dir)
+			except:
+				pass
+if __name__ == "__main__":
+	organize_junk()
